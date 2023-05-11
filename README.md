@@ -21,8 +21,10 @@ The program receives input from the microphone and converts it to text using Goo
 
 # Troubleshooting
 **Error:** AttributeError: Could not find PyAudio; check installation...can't use speech Recognition
+<br>
 Solution: Either PyAudio is not installed or you have an incorrect version of playsound.
 <br>
+
 To install PyAudio, use pip install PyAudio
 <br>
 If PyAudio is already installed and you are still receiving this error, try a different version of playsound. To do this, use:
