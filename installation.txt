@@ -1,0 +1,3 @@
+Required libraries:
+transformers
+playsound 1.2.2
