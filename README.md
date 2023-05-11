@@ -1,5 +1,5 @@
 # DialoGPT Bot
-This is a chatbot created using DialoGPT
+This is a general purpose voice chatbot created using DialoGPT.
 
 # Installation
 To install, you can clone the repository using: git clone https://github.com/caij3/dialogpt-bot 
@@ -27,8 +27,6 @@ To install PyAudio, use pip install PyAudio
 <br>
 If PyAudio is already installed and you are still receiving this error, try a different version of playsound. To do this, use:
 <br>
-
 pip uninstall playsound
 <br>
-
 pip install playsound==1.2.2
