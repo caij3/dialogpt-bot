@@ -3,8 +3,10 @@ import os
 import speech_recognition as sr
 import playsound
 
+# Name of the audio file generated
 FILE = "voice.mp3"
 
+# Plays the audio file
 def speak(text):
     try:
         tts = gTTS(text=text,lang="en")
@@ -15,6 +17,7 @@ def speak(text):
     except Exception as e:
         print(e)
 
+# Listens to audio
 def get_audio():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -25,7 +28,6 @@ def get_audio():
             said = r.recognize_google(audio)
             if not said:
                 return ""
-            #speak(said)
             print(said)
             return said
         except Exception as e:
