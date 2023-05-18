@@ -35,3 +35,5 @@ pip uninstall playsound
 <br>
 pip install playsound==1.2.2
 
+# Other comments
+Whisper AI is trained using Youtube videos, where many videos would have "thank you for watching" or a similar caption near the end of the video even if there is nobody talking. This causes Whisper AI to transcribe anything inaudible to "thank you".
