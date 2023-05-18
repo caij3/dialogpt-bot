@@ -1,19 +1,17 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-from random import randint
 from time import sleep
-from tts import speak, get_audio
-
-# Increase this to give more variety to the bot's responses, longer response times
-SEQUENCES = 1
+from voice_recognition import get_audio, recognize_audio
+from tts import speak
+import asyncio
 
 # initialize chat history
 step = 0
 
 # Select which model you want to use
 model_name = "microsoft/DialoGPT-medium"
-# If you want more accurate answers at the cost of speed, use this model instead
-#model_name = "microsoft/DialoGPT-large"
+# If you want more accurate answers at the cost of speed, uncomment the line below
+# model_name = "microsoft/DialoGPT-large"
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
@@ -23,10 +21,14 @@ try:
     while True:
         # take user input
         #text = input()
-        text = get_audio()
+        audio = get_audio()
+        # Set to True to use Whisper AI for voice recognition
+        text = recognize_audio(audio,False)
+        # Reduce busy waiting
         if not text:
             sleep(0.1)
             continue
+        text = ""
         # encode the input and add end of string token
         input_ids = tokenizer.encode(text + tokenizer.eos_token, return_tensors="pt")
         # concatenate new user input with chat history (if there is)
@@ -39,17 +41,20 @@ try:
         chat_history_ids_list = model.generate(
             bot_input_ids,
             max_length=1000,
+            min_length = 2,
             do_sample=True,
             top_p=0.95,
             top_k=50,
             temperature=0.75,
-            num_return_sequences=SEQUENCES,
-            pad_token_id=tokenizer.eos_token_id
+            pad_token_id=tokenizer.eos_token_id,
+            repetition_penalty=1.35
         )
-        choice_index = randint(0,SEQUENCES-1)
-        output = tokenizer.decode(chat_history_ids_list[choice_index][bot_input_ids.shape[-1]:], skip_special_tokens=True)
-        speak(output)
-        print(output)
-        chat_history_ids = torch.unsqueeze(chat_history_ids_list[choice_index], dim=0)
+        output = tokenizer.decode(chat_history_ids_list[0][bot_input_ids.shape[-1]:], skip_special_tokens=True)
+        chat_history_ids = torch.unsqueeze(chat_history_ids_list[0], dim=0)
+
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(speak(output))
+        print("output: " + output)
 except KeyboardInterrupt:
     print("Exiting...")
+    loop.close()

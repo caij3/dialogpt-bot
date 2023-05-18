@@ -1,34 +1,33 @@
-from gtts import gTTS
+import edge_tts
 import os
-import speech_recognition as sr
+import sounddevice as sd
+import soundfile as sf
 import playsound
+from gtts import gTTS
 
-# Name of the audio file generated
-FILE = "voice.mp3"
+DEVICE_ID = sd.default.device
+VOICE = "en-IE-EmilyNeural"
+FILENAME = "sound.mp3"
 
-# Plays the audio file
-def speak(text):
+# Play audio using Microsoft text-to-speech voices
+async def speak(text,device_id=DEVICE_ID):
     try:
-        tts = gTTS(text=text,lang="en")
-        filename = "sound.mp3"
-        tts.save(filename)
-        playsound.playsound(filename)
-        os.remove("sound.mp3")
+        communicate = edge_tts.Communicate(text, VOICE)
+        await communicate.save(FILENAME)
+        data,fs = sf.read(FILENAME,dtype='float32')
+        sd.play(data,fs,device=device_id)
+        sd.wait()
+        #playsound.playsound(filename)
+        os.remove(FILENAME)
     except Exception as e:
         print(e)
 
-# Listens to audio
-def get_audio():
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("listening")
-        audio = r.listen(source)
-        said = ""
-        try:
-            said = r.recognize_google(audio)
-            if not said:
-                return ""
-            print(said)
-            return said
-        except Exception as e:
-            print(e)
+# Plays the audio file using Google text-to-speech
+def speak_google(text):
+    try:
+        tts = gTTS(text=text,lang="en")
+        tts.save(FILENAME)
+        playsound.playsound(FILENAME)
+        os.remove(FILENAME)
+    except Exception as e:
+        print(e)
