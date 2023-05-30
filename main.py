@@ -9,9 +9,9 @@ import asyncio
 step = 0
 
 # Select which model you want to use
-model_name = "microsoft/DialoGPT-medium"
+# model_name = "microsoft/DialoGPT-medium"
 # If you want more accurate answers at the cost of speed, uncomment the line below
-# model_name = "microsoft/DialoGPT-large"
+model_name = "microsoft/DialoGPT-large"
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
@@ -28,7 +28,6 @@ try:
         if not text:
             sleep(0.1)
             continue
-        text = ""
         # encode the input and add end of string token
         input_ids = tokenizer.encode(text + tokenizer.eos_token, return_tensors="pt")
         # concatenate new user input with chat history (if there is)
