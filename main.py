@@ -20,7 +20,7 @@ model = AutoModelForCausalLM.from_pretrained(model_name)
 try:
     while True:
         # take user input
-        #text = input()
+        # text = input("Prompt: ")
         audio = get_audio()
         # Set to True to use Whisper AI for voice recognition
         text = recognize_audio(audio,False)
